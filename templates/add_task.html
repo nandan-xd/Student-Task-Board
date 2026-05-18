@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title%} Add Task{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Add New Task</h4>
+        </div>
+        <div class="card-body">
+          <form action="#" method="POST" novalidate>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Task</label>
+              <input type="text" class="form-control" name="ts" placeholder="Enter your task" required>
+              <div class="form-text">What do you need to accomplish?</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Due Date</label>
+              <input type="date" class="form-control" name="dt" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Description</label>
+              <textarea class="form-control" name="ds" rows="3" placeholder="Add any additional details..."></textarea>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">Add Task</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

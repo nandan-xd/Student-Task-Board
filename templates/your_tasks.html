@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Your Tasks{% endblock %}
+{% block content %}
+    <div style="max-width:900px;margin:20px auto;font-family:Arial,Helvetica,sans-serif;">
+        <h1 style="text-align:center;margin-bottom:18px;color:#333;">Your Tasks</h1>
+        {% if tasks|length == 0 %}
+            <p style="text-align:center;color:#666;">No tasks found.</p>
+        {% endif %}
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            {% for task in tasks %}
+                <div style="border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+                        <div>
+                            <h2 style="margin:0 0 6px 0;font-size:1.1rem;color:#111;">{{ task.title }}</h2>
+                            <div style="color:#666;font-size:0.9rem;">{{ task.date }}</div>
+                        </div>
+                        <div style="text-align:right;min-width:100px;color:#333;line-height:1.4;">
+                            {# Priority badge with colors per priority level #}
+                            {% if task.priority|lower == 'high' %}
+                                <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#dc3545;">{{ task.priority }}</span>
+                            {% elif task.priority|lower == 'medium' %}
+                                <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#fd7e14;">{{ task.priority }}</span>
+                            {% elif task.priority|lower == 'low' %}
+                                <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#28a745;">{{ task.priority }}</span>
+                            {% else %}
+                                <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#6c757d;">{{ task.priority }}</span>
+                            {% endif %}
+                            <div style="margin-top:8px;">
+                                <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" style="display:inline;">
+                                    <button type="submit" class="link" style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#ff1900;border:none;cursor:pointer;" href=" {{url_for('delete_task')}}">
+                                        Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% if task.description %}
+                        <p style="margin:10px 0 0 0;color:#333;line-height:1.4;">{{ task.description }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
