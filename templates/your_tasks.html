@@ -6,15 +6,23 @@
         {% if tasks|length == 0 %}
             <p style="text-align:center;color:#666;">No tasks found.</p>
         {% endif %}
-        <div style="display:flex;flex-direction:column;gap:12px;">
-            {% for task in tasks %}
-                <div style="border:1px solid #e0e0e0;border-radius:8px;padding:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                        <div>
-                            <h2 style="margin:0 0 6px 0;font-size:1.1rem;color:#111;">{{ task.title }}</h2>
-                            <div style="color:#666;font-size:0.9rem;">{{ task.date }}</div>
-                        </div>
-                        <div style="text-align:right;min-width:100px;color:#333;line-height:1.4;">
+        <table style="width:100%;border-collapse:collapse;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <thead>
+                <tr style="background:#f8f9fa;border-bottom:2px solid #e0e0e0;">
+                    <th style="padding:12px;text-align:left;color:#333;font-weight:600;">Title</th>
+                    <th style="padding:12px;text-align:left;color:#333;font-weight:600;">Description</th>
+                    <th style="padding:12px;text-align:center;color:#333;font-weight:600;">Due date</th>
+                    <th style="padding:12px;text-align:center;color:#333;font-weight:600;">Priority</th>
+                    <th style="padding:12px;text-align:center;color:#333;font-weight:600;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr style="border-bottom:1px solid #e0e0e0;">
+                        <td style="padding:12px;color:#111;">{{ task.title }}</td>
+                        <td style="padding:12px;color:#666;max-width:300px;word-wrap:break-word;">{{ task.description if task.description else '-' }}</td>
+                        <td style="padding:12px;text-align:center;color:#666;font-size:0.9rem;">{{ task.date }}</td>
+                        <td style="padding:12px;text-align:center;">
                             {# Priority badge with colors per priority level #}
                             {% if task.priority|lower == 'high' %}
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#dc3545;">{{ task.priority }}</span>
@@ -25,19 +33,16 @@
                             {% else %}
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#6c757d;">{{ task.priority }}</span>
                             {% endif %}
-                            <div style="margin-top:8px;">
-                                <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}" style="display:inline;">
-                                    <button type="submit" class="link" style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#ff1900;border:none;cursor:pointer;" href=" {{url_for('delete_task')}}">
-                                        Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    {% if task.description %}
-                        <p style="margin:10px 0 0 0;color:#333;line-height:1.4;">{{ task.description }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
+                        </td>
+                        <td style="padding:12px;text-align:center;">
+                            <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}" style="display:inline;">
+                                <button type="submit" class="link" style="display:inline-block;padding:6px 12px;border-radius:6px;font-size:0.85rem;color:#fff;background:#d73f3f;border:none;cursor:pointer;transition:background 0.2s ease;" onmouseover="this.style.background='#c12e2e';" onmouseout="this.style.background='#d73f3f';">
+                                    Delete Task/ Task Done</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

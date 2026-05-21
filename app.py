@@ -3,11 +3,12 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 app.permanent_session_lifetime = timedelta(weeks = 999)
-task = []
+i=1
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/add-task', methods=['POST', 'GET'])
 def add_tasks():
     priority = ""
+    global i
     for i in range(1):
         if request.method == 'POST':
             title = request.form['ts']
@@ -17,7 +18,7 @@ def add_tasks():
             current_date = datetime.now()
             if due_date < current_date:
                 priority = "Date Missed"
-            elif due_date == current_date:
+            elif due_date.date() == current_date.date():
                 priority = "Very High"
             elif current_date + timedelta(days=3) >= due_date > current_date:
                 priority = "High"
@@ -25,25 +26,34 @@ def add_tasks():
                 priority = "Medium"
             else:
                 priority = "Low"
-            task.append({'title': title, 'date': date, 'description': description or "No description provided", 'priority': priority})
+
+            task = session.get('task', [])
+            task.append({'title': title, 'date': date, 'description': description or "No description provided", 'priority': priority, 'id': i})
             session['task'] = task
-            #print(task)
-            # return redirect(url_for('your_tasks'))
+            i += 1
+            return redirect(url_for('your_tasks'))
         
     return render_template("add_task.html")
 
-@app.route('/your-tasks')
+@app.route('/your-tasks', methods = ['GET', 'POST'])
 def your_tasks():
     tasks = session.get('task', [])
     return render_template("your_tasks.html", tasks=tasks)
 
-@app.route('/delete-task', methods=['POST'])
+@app.route('/delete-task', methods=['POST', 'GET'])
 def delete_task():
     tasks = session.get('task', [])
-    if tasks:
-        delete = tasks.pop()
-        session['task'] = tasks 
-    return redirect(url_for('your_tasks', delete=delete))
+    task_id = request.args.get('task_id')
+    
+    for index, task in enumerate(tasks):
+        if int(task_id) == task['id']:
+            
+            tasks.pop(index+1)
+            break 
+
+    session['task'] = tasks
+
+    return redirect(url_for('your_tasks'))
 
 if __name__ == "__main__":
     app.run(debug=True)
