@@ -31,6 +31,7 @@ def add_tasks():
             task.append({'title': title, 'date': date, 'description': description or "No description provided", 'priority': priority, 'id': i})
             session['task'] = task
             i += 1
+            session['i'] = i
             return redirect(url_for('your_tasks'))
         
     return render_template("add_task.html")
@@ -44,13 +45,14 @@ def your_tasks():
 def delete_task():
     tasks = session.get('task', [])
     task_id = request.args.get('task_id')
-    
-    for index, task in enumerate(tasks):
-        if int(task_id) == task['id']:
+    i = session.get('i')
+    for j in range(i):
+        if len(tasks) != 1 and tasks[j]['id'] == int(task_id):
+            del tasks[j]
+            break
+        elif len(tasks) == 1:
+            tasks.clear()
             
-            tasks.pop(index+1)
-            break 
-
     session['task'] = tasks
 
     return redirect(url_for('your_tasks'))
