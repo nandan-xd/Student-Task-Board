@@ -38,7 +38,7 @@
                         <td class="task-cell title" data-label="Title:" style="padding:12px;color:#111;">{{ task.title }}</td>
                         <td class="task-cell description" data-label="Description:" style="padding:12px;color:#666;max-width:300px;word-wrap:break-word;">{{ task.description if task.description else '-' }}</td>
                         <td class="task-cell date" data-label="Due date:" style="padding:12px;text-align:center;color:#666;font-size:0.9rem;">{{ task.date }}</td>
-                        <td style="padding:12px;text-align:center;">
+                        <td class="task-cell" data-label="Priority:" style="padding:12px;text-align:center;">
                             {# Priority badge with colors per priority level #}
                             {% if task.priority|lower == 'high' %}
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#dc3545;">{{ task.priority }}</span>
@@ -52,7 +52,7 @@
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#6c757d;">{{ task.priority }}</span>
                             {% endif %}
                         </td>
-                        <td style="padding:12px;text-align:center;">
+                        <td class="task-cell" data-label="Action:" style="padding:12px;text-align:center;">
                             <form method="GET" action="{{ url_for('delete_task') }}" style="display:inline;">
                                 <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit" class="link" style="display:inline-block;padding:6px 12px;border-radius:6px;font-size:0.85rem;color:#fff;background:#d73f3f;border:none;cursor:pointer;transition:background 0.2s ease;" onmouseover="this.style.background='#c12e2e';" onmouseout="this.style.background='#d73f3f';">
