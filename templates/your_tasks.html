@@ -30,12 +30,15 @@
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#fd7e14;">{{ task.priority }}</span>
                             {% elif task.priority|lower == 'low' %}
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#28a745;">{{ task.priority }}</span>
+                            {% elif task.priority|lower == 'very high' %}
+                                <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#c91a1a;">{{ task.priority }}</span>
                             {% else %}
                                 <span style="display:inline-block;padding:6px 10px;border-radius:12px;font-size:0.85rem;color:#fff;background:#6c757d;">{{ task.priority }}</span>
                             {% endif %}
                         </td>
                         <td style="padding:12px;text-align:center;">
-                            <form method="POST" action="{{ url_for('delete_task', task_id=task.id) }}" style="display:inline;">
+                            <form method="GET" action="{{ url_for('delete_task') }}" style="display:inline;">
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit" class="link" style="display:inline-block;padding:6px 12px;border-radius:6px;font-size:0.85rem;color:#fff;background:#d73f3f;border:none;cursor:pointer;transition:background 0.2s ease;" onmouseover="this.style.background='#c12e2e';" onmouseout="this.style.background='#d73f3f';">
                                     Delete Task/ Task Done</button>
                             </form>
