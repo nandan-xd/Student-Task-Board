@@ -15,7 +15,7 @@ class Tasks(db.Model):
     date = db.Column(db.String(20), nullable=False)
     description = db.Column(db.String(200), nullable=True)
     priority = db.Column(db.String(20), nullable=False)
-
+    user_id = db.Column(db.String(50), nullable = False)
 with app.app_context():
     db.create_all()
 
@@ -36,14 +36,27 @@ def calculate_priority(date):
 
 i = 0
 @app.route('/', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        if 'user_id' in session:
+            return redirect(url_for('your_tasks'))
+        else:
+            session.permanent = True
+            user = request.form['user_id']
+            session['user_id'] = user
+            return redirect(url_for('your_tasks'))
+    return render_template("login.html")
+
 @app.route('/add-task', methods=['POST', 'GET'])
 def add_tasks():
     global i
     if request.method == 'POST':
+        user_id = session['user_id']
         title = request.form['ts']
         date = request.form['dt']
         description = request.form.get('ds')
-        task = Tasks(id = i, title = title, date = date, description = description, priority = calculate_priority(date))
+        task = Tasks(title = title, date = date, description = description, priority = calculate_priority(date), user_id = user_id)
         db.session.add(task)
         db.session.commit()
         i += 1
@@ -52,7 +65,7 @@ def add_tasks():
 
 @app.route('/your-tasks', methods = ['GET', 'POST'])
 def your_tasks():
-    tasks = Tasks.query.all()
+    tasks = db.session.execute(db.select(Tasks).filter_by(user_id=session['user_id'])).scalars().all()
     if request.method == 'POST':
         for task in tasks:
             task.priority = calculate_priority(task.date)
@@ -61,7 +74,7 @@ def your_tasks():
 @app.route('/delete-task', methods=['POST', 'GET'])
 def delete_task():
     task_id = request.args.get('task_id')
-    tasks = Tasks.query.get(int(task_id))
+    tasks = db.session.get(Tasks, int(task_id))
     if tasks:
         db.session.delete(tasks)
         db.session.commit()

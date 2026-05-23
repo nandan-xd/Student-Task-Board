@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} Login / Register {% endblock %}
+{% block content %} 
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Login / Register</h2>
+                    <form action="#" method="POST">
+                        <div class="mb-3">
+                            <label for="user_id" class="form-label">User ID</label>
+                            <input type="text" class="form-control" placeholder="Enter your user id" name="user_id" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
