@@ -21,20 +21,18 @@ with app.app_context():
 
 def calculate_priority(date):
     IST = timezone(timedelta(hours=5, minutes=30))
-    CEST = timezone(timedelta(hours = 8, minutes = 0))
-    due_date = datetime.strptime(date, '%Y-%m-%d')
+    due_date = datetime.strptime(date, '%Y-%m-%d').date() 
     current_date = datetime.now(IST).date()
-    if due_date < current_date or due_date == current_date - timedelta(days=1):
-        priority = "Date Missed"
-    elif due_date.date() == current_date.date():
-        priority = "Very High"
-    elif current_date + timedelta(days=3) >= due_date > current_date:
-        priority = "High"
-    elif current_date + timedelta(days=7) >= due_date > current_date + timedelta(days=3):
-        priority = "Medium"
+    if due_date < current_date:
+        return "Date Missed"
+    elif due_date == current_date:
+        return "Very High"
+    elif due_date <= current_date + timedelta(days=3):
+        return "High"
+    elif due_date <= current_date + timedelta(days=7):
+        return "Medium"
     else:
-        priority = "Low"
-    return priority
+        return "Low"
 
 i = 0
 @app.route('/', methods=['POST', 'GET'])
