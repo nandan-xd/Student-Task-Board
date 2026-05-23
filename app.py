@@ -3,10 +3,7 @@ from datetime import datetime, timedelta, timezone
 from flask_sqlalchemy import SQLAlchemy
 import os
 app = Flask(__name__)
-uri = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
-if uri.startswith('postgresql://'):
-    uri = uri.replace('postgresql://', 'postgresql+psycopg2://', 1)
-app.config['SQLALCHEMY_DATABASE_URI'] = uri
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
 app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
