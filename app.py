@@ -24,7 +24,7 @@ def calculate_priority(date):
     CEST = timezone(timedelta(hours = 8, minutes = 0))
     due_date = datetime.strptime(date, '%Y-%m-%d')
     current_date = datetime.now(IST).date()
-    if due_date.date() < current_date.date() or due_date.date() == current_date.date() - timedelta(days=1):
+    if due_date < current_date or due_date == current_date - timedelta(days=1):
         priority = "Date Missed"
     elif due_date.date() == current_date.date():
         priority = "Very High"
