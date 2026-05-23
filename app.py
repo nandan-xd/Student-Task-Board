@@ -24,13 +24,13 @@ def calculate_priority(date):
     due_date = datetime.strptime(date, '%Y-%m-%d').date() 
     current_date = datetime.now(IST).date()
     if due_date < current_date or due_date == current_date - timedelta(days=1):
-        priority = "Date Missed"
+        return "Date Missed"
     elif due_date == current_date:
-        priority = "Very High"
+        return "Very High"
     elif current_date + timedelta(days=3) >= due_date > current_date:
-        priority = "High"
+        return "High"
     elif current_date + timedelta(days=7) >= due_date > current_date + timedelta(days=3):
-        priority = "Medium"
+        return "Medium"
     else:
         return "Low"
 
