@@ -3,7 +3,10 @@ from datetime import datetime, timedelta, timezone
 from flask_sqlalchemy import SQLAlchemy
 import os
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
+uri = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
+if uri.startswith('postgresql://'):
+    uri = uri.replace('postgresql://', 'postgresql+psycopg2://', 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -69,6 +72,7 @@ def your_tasks():
     if request.method == 'POST':
         for task in tasks:
             task.priority = calculate_priority(task.date)
+        db.session.commit()
     return render_template("your_tasks.html", tasks=tasks)
 
 @app.route('/delete-task', methods=['POST', 'GET'])
