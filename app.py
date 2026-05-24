@@ -70,7 +70,7 @@ def add_tasks():
         return redirect(url_for('your_tasks'))       
     return render_template("add_task.html")
 
-@app.route('/your-tasks', methods = ['GET', 'POST'])
+@app.route('/your-tasks', methods = ['GET', 'POST']) 
 def your_tasks():
     tasks = db.session.execute(db.select(Tasks).filter_by(user_id=session['user_id'])).scalars().all()
     if request.method == 'POST':
