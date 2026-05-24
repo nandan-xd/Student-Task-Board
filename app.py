@@ -3,7 +3,16 @@ from datetime import datetime, timedelta, timezone
 from flask_sqlalchemy import SQLAlchemy
 import os
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    database_url = database_url.replace(
+        "postgres://",
+        "postgresql://",
+        1
+    )
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///tasks.db'
 app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -33,8 +42,6 @@ def calculate_priority(date):
         return "Medium"
     else:
         return "Low"
-
-i = 0
 @app.route('/', methods=['POST', 'GET'])
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -50,16 +57,16 @@ def login():
 
 @app.route('/add-task', methods=['POST', 'GET'])
 def add_tasks():
-    global i
     if request.method == 'POST':
-        user_id = session['user_id']
+        user_id = session.get('user_id')
         title = request.form['ts']
         date = request.form['dt']
         description = request.form.get('ds')
         task = Tasks(title = title, date = date, description = description, priority = calculate_priority(date), user_id = user_id)
         db.session.add(task)
         db.session.commit()
-        i += 1
+
+        print("Saved:", task.title)
         return redirect(url_for('your_tasks'))       
     return render_template("add_task.html")
 
@@ -70,6 +77,7 @@ def your_tasks():
         for task in tasks:
             task.priority = calculate_priority(task.date)
         db.session.commit()
+        print(tasks)
     return render_template("your_tasks.html", tasks=tasks)
 
 @app.route('/delete-task', methods=['POST', 'GET'])
